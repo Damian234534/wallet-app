@@ -29,19 +29,19 @@ namespace WalletApp.Server.Module.Controllers
         }
 
         [HttpPost]
-        [Route("addFounds")]
-        public async Task<IActionResult> AddFounds(long walletId, decimal founds)
+        [Route("addFunds")]
+        public async Task<IActionResult> AddFunds(long walletId, decimal funds)
         {
-            await walletService.AddFounds(walletId, founds);
+            await walletService.AddFunds(walletId, funds);
 
             return Ok();
         }
 
         [HttpPost]
-        [Route("removeFounds")]
-        public async Task<IActionResult> RemoveFounds(long walletId, decimal founds)
+        [Route("removeFunds")]
+        public async Task<IActionResult> RemoveFunds(long walletId, decimal funds)
         {
-            await walletService.RemoveFounds(walletId, founds);
+            await walletService.RemoveFunds(walletId, funds);
 
             return Ok();
         }

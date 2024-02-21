@@ -21,7 +21,7 @@ namespace WalletApp.Server.Domain
             return await repository.Get(walletId);
         }
 
-        public async Task AddFounds(long walletId, decimal founds)
+        public async Task AddFunds(long walletId, decimal funds)
         {
             var wallet = await repository.Get(walletId);
 
@@ -30,21 +30,32 @@ namespace WalletApp.Server.Domain
                 throw new ArgumentNullException();
             }
 
-            wallet.Balance += founds;
+            wallet.Balance += funds;
 
             await repository.Update(wallet);
         }
 
-        public async Task RemoveFounds(long walletId, decimal founds)
+        public async Task RemoveFunds(long walletId, decimal funds)
         {
             var wallet = await repository.Get(walletId);
 
-            if (wallet is null)
+            if (funds <= 0)
             {
-                throw new ArgumentNullException();
+                Console.WriteLine("Invalid funds. Please enter a positive value.");
+                return;
             }
 
-            wallet.Balance -= founds;
+            if (wallet is null)
+            {
+                throw new ArgumentNullException("Wallet not exists");
+            }
+
+            if(wallet.Balance < funds)
+            {
+                throw new ArgumentNullException("Insufficient funds.");
+            }
+
+            wallet.Balance -= funds;
 
             await repository.Update(wallet);
         }
@@ -62,11 +73,11 @@ namespace WalletApp.Server.Domain
 
     public interface IWalletService
     {
-        Task AddFounds(long walletId, decimal founds);
+        Task AddFunds(long walletId, decimal founds);
         Task Create(Wallet wallet);
         Task<Wallet?> Get(long walletId);
         Task<decimal> GetBalance(long accountId);
         Task<IEnumerable<Wallet>> GetWallets();
-        Task RemoveFounds(long walletId, decimal founds);
+        Task RemoveFunds(long walletId, decimal founds);
     }
 }
