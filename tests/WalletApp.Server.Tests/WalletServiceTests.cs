@@ -23,7 +23,7 @@ namespace WalletApp.Server.Tests
                 .Setup(x => x.Get(It.IsAny<long>()))
                 .ReturnsAsync(() => new Wallet());
 
-             // Assert 
+            // Assert 
             Assert.ThrowsAsync<InvalidOperationException>(() => CreateSut().AddFunds(10, -1));
         }
 

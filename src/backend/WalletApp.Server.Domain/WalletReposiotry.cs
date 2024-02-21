@@ -32,12 +32,12 @@ namespace WalletApp.Server.Domain
 
         public async Task<decimal> GetBalance(long accountId)
         {
-            return await context.Wallets.Where(x=>x.Id == accountId).Select(x=>x.Balance).FirstOrDefaultAsync();
+            return await context.Wallets.Where(x => x.Id == accountId).Select(x => x.Balance).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Wallet>> GetWallets()
         {
-            return await context.Wallets.ToListAsync();         
+            return await context.Wallets.ToListAsync();
         }
     }
 

@@ -30,7 +30,7 @@ namespace WalletApp.Server.Domain
 
             var wallet = await repository.Get(walletId);
 
-            if(wallet is null)
+            if (wallet is null)
             {
                 throw new ArgumentNullException();
             }
@@ -54,7 +54,7 @@ namespace WalletApp.Server.Domain
                 throw new ArgumentNullException("Wallet not exists");
             }
 
-            if(wallet.Balance < funds)
+            if (wallet.Balance < funds)
             {
                 throw new ArgumentNullException("Insufficient funds.");
             }

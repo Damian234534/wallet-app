@@ -36,7 +36,7 @@ namespace WalletApp.Server.Module.Controllers
 
             try
             {
-               wallet = await walletService.Get(walletId);
+                wallet = await walletService.Get(walletId);
             }
             catch (Exception)
             {
