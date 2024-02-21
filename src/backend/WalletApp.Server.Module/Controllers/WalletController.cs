@@ -1,6 +1,6 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WalletApp.Server.Core.Models;
+using WalletApp.Server.Domain;
 
 namespace WalletApp.Server.Module.Controllers
 {
@@ -8,25 +8,33 @@ namespace WalletApp.Server.Module.Controllers
     [Route("api/wallet")]
     public class WalletController : ControllerBase
     {
-        private static List<Wallet> wallets = new List<Wallet>();
+        private readonly IWalletService walletService;
+
+        public WalletController(IWalletService walletService)
+        {
+            this.walletService = walletService;
+        }
 
         [HttpPost]
         [Route("create")]
-        public IActionResult CreateWallet()
+        public async Task<IActionResult> CreateWallet()
         {
-
-            wallets.Add(new Wallet(){
-                Id = Guid.NewGuid(),
+            await walletService.Create(new Wallet()
+            {
+                Balance = 0,
                 Name = Guid.NewGuid().ToString()
             });
+
             return Ok();
         }
 
         [HttpGet]
-        [Route("balance")]
-        public IActionResult GetBalance()
+        [Route("all")]
+        public async Task<IActionResult> GetWallets()
         {
-            return Ok(wallets);
+            var walletList = await walletService.GetWallets();
+
+            return Ok(walletList);
         }
     }
 }

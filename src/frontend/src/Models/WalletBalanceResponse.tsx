@@ -1,6 +1,7 @@
-type WalletBalanceResponse = {
-    id: string,
+type WalletResponse = {
+    id: number,
     name: string,
+    balance: number
   };
   
-  export default WalletBalanceResponse;
+  export default WalletResponse;

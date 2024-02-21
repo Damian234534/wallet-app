@@ -1,15 +1,36 @@
-﻿namespace WalletApp.Server.Domain
+﻿using WalletApp.Server.Core.Models;
+
+namespace WalletApp.Server.Domain
 {
     public class WalletService : IWalletService
     {
-        public decimal GetBalance()
+        private readonly IWalletRepository repository;
+
+        public WalletService(IWalletRepository repository)
         {
-            throw new NotImplementedException();
+            this.repository = repository;
+        }
+
+        public async Task Create(Wallet wallet)
+        {
+            await repository.Create(wallet);
+        }
+
+        public async Task<decimal> GetBalance(long accountId)
+        {
+            return await repository.GetBalance(accountId);
+        }
+
+        public async Task<IEnumerable<Wallet>> GetWallets()
+        {
+            return await repository.GetWallets();
         }
     }
 
     public interface IWalletService
     {
-        decimal GetBalance();
+        Task Create(Wallet wallet);
+        Task<decimal> GetBalance(long accountId);
+        Task<IEnumerable<Wallet>> GetWallets();
     }
 }

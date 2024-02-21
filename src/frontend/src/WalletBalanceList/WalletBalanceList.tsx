@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import restApiClient from '../RestApiClient';
-import WalletBalanceResponse from '../Models/WalletBalanceResponse';
+import WalletResponse from '../Models/WalletBalanceResponse';
 import './WalletBalanceList.css';
 
+type WalletId = Pick<WalletResponse, "id">;
+
 const WalletBalanceList = () => {
-  const [walletBalances, setWalletBalances] = useState<WalletBalanceResponse[]>();
+  const [walletBalances, setWalletBalances] = useState<WalletResponse[]>();
   const [userId, setUserId] = useState('');
   const [amount, setAmount] = useState('');
 
-  const [userIds, setUserIds] = useState<WalletBalanceId[]>();
+  const [walletIds, setWalletIds] = useState<number[]>();
 
-  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedWalletId, setSelectedWalletId] = useState('');
 
   useEffect(() => {
     fetchUserIds();
@@ -19,8 +21,8 @@ const WalletBalanceList = () => {
 
   const fetchUserIds = async () => {
     try {
-      const response = await restApiClient.get<WalletBalanceId[]>('/wallet/balance');
-      setUserIds(response.data);
+      const response = await restApiClient.get<WalletResponse[]>('/wallet/all');
+      setWalletIds(response.data.map(x=> x.id));
     } catch (error) {
       console.error('Error fetching user IDs:', error);
     }
@@ -39,7 +41,7 @@ const WalletBalanceList = () => {
 
   const fetchWalletBalances = async () => {
     try {
-      const response = await restApiClient.get<WalletBalanceResponse[]>('/wallet/balance');
+      const response = await restApiClient.get<WalletResponse[]>('/wallet/all');
       setWalletBalances(response.data);
     } catch (error) {
       console.error('Error fetching wallet balances:', error);
@@ -62,16 +64,16 @@ const WalletBalanceList = () => {
       <h1>Wallet Balances</h1>
       <ul>
         {walletBalances?.map((balance, index) => (
-          <li key={index}>User {index + 1}: {balance.name}</li>
+          <li key={index}>Account {index + 1}: {balance.name}</li>
         ))}
       </ul>
       <div className="operation-section">
         <h2>Perform Operations</h2>
         <div className="select-container">
-        <select value={selectedUserId} onChange={(e) => setSelectedUserId(e.target.value)}>
-          <option value="">Select User ID</option>
-          {userIds?.map(userId => (
-            <option key={userId.id} value={userId.id}>{userId.id}</option>
+        <select value={selectedWalletId} onChange={(e) => setSelectedWalletId(e.target.value)}>
+          <option value="">Select account ID</option>
+          {walletIds?.map(accountId => (
+            <option key={accountId} value={accountId}>{accountId}</option>
           ))}
         </select>
         </div>
@@ -91,7 +93,3 @@ const WalletBalanceList = () => {
 };
 
 export default WalletBalanceList;
-
-
-
-type WalletBalanceId = Pick<WalletBalanceResponse, "id">;
