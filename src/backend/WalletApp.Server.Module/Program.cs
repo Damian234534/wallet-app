@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using Serilog;
-using Microsoft.AspNetCore.Builder;
+using WalletApp.Server.Domain;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File("logs/log.txt",
@@ -25,6 +25,11 @@ builder.Logging.AddSerilog();
 builder.Services.AddLogging();
 
 builder.Services.AddControllers();
+
+builder.Services.AddWalletServices();
+
+builder.Services.AddDbContext<WalletContext>(opt =>
+    opt.UseInMemoryDatabase("WalletList"));
 
 builder.Services.AddSwaggerGen();
 
