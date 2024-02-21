@@ -24,8 +24,31 @@ builder.Services.Configure<ConfigSettings>(builder.Configuration);
 builder.Logging.AddSerilog();
 builder.Services.AddLogging();
 
+builder.Services.AddControllers();
+
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        }));
+
 builder.WebHost.UseUrls(urls: builder.Configuration[nameof(ConfigSettings.WEB_HOST_URL)]!);
 
 var app = builder.Build();
+
+app.UseAuthorization();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors("MyPolicy");
+
+app.MapControllers();
 
 app.Run();
