@@ -25,8 +25,7 @@ namespace WalletApp.Server.Domain
         {
             if (funds <= 0)
             {
-                Console.WriteLine("Invalid funds. Please enter a positive value.");
-                return;
+                throw new InvalidOperationException("Invalid funds. Please enter a positive value.");
             }
 
             var wallet = await repository.Get(walletId);
@@ -45,8 +44,7 @@ namespace WalletApp.Server.Domain
         {
             if (funds <= 0)
             {
-                Console.WriteLine("Invalid funds. Please enter a positive value.");
-                return;
+                throw new InvalidOperationException("Invalid funds. Please enter a positive value.");
             }
 
             var wallet = await repository.Get(walletId);
