@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WalletApp.Server.Core\WalletApp.Server.Core.csproj" />
+    <ProjectReference Include="..\WalletApp.Server.Domain\WalletApp.Server.Domain.csproj" />
     <ProjectReference Include="..\WalletApp.Server.Infrastructure\WalletApp.Server.Infrastructure.csproj" />
   </ItemGroup>
 
