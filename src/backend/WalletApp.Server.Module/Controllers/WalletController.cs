@@ -17,7 +17,7 @@ namespace WalletApp.Server.Module.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateWallet()
+        public async Task<IActionResult> Create()
         {
             await walletService.Create(new Wallet()
             {
@@ -29,19 +29,51 @@ namespace WalletApp.Server.Module.Controllers
         }
 
         [HttpPost]
+        [Route("get")]
+        public async Task<IActionResult> Get(long walletId)
+        {
+            Wallet? wallet;
+
+            try
+            {
+               wallet = await walletService.Get(walletId);
+            }
+            catch (Exception)
+            {
+                return Problem("Does not exists");
+            }
+
+            return Ok(wallet);
+        }
+
+        [HttpPut]
         [Route("addFunds")]
         public async Task<IActionResult> AddFunds(long walletId, decimal funds)
         {
-            await walletService.AddFunds(walletId, funds);
+            try
+            {
+                await walletService.AddFunds(walletId, funds);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
 
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("removeFunds")]
         public async Task<IActionResult> RemoveFunds(long walletId, decimal funds)
         {
-            await walletService.RemoveFunds(walletId, funds);
+            try
+            {
+                await walletService.RemoveFunds(walletId, funds);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
 
             return Ok();
         }

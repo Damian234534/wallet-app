@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import restApiClient from '../RestApiClient';
 import WalletResponse from '../Models/WalletBalanceResponse';
 import './WalletBalanceList.css';
+import { toast } from 'react-toastify';
 
 type WalletId = Pick<WalletResponse, "id">;
 
 const WalletBalanceList = () => {
-  const [walletBalances, setWalletBalances] = useState<WalletResponse[]>();
-  const [userId, setUserId] = useState('');
+  const [wallets, setWalletBalances] = useState<WalletResponse[]>();
   const [amount, setAmount] = useState('');
 
   const [walletIds, setWalletIds] = useState<number[]>();
@@ -15,58 +15,56 @@ const WalletBalanceList = () => {
   const [selectedWalletId, setSelectedWalletId] = useState('');
 
   useEffect(() => {
-    fetchUserIds();
-    fetchWalletBalances();
+    fetchWallets();
   }, []);
-
-  const fetchUserIds = async () => {
-    try {
-      const response = await restApiClient.get<WalletResponse[]>('/wallet/all');
-      setWalletIds(response.data.map(x=> x.id));
-    } catch (error) {
-      console.error('Error fetching user IDs:', error);
-    }
-  };
 
   const handleDeposit = async () => {
     try {
-      await restApiClient.post('/api/wallet/deposit', { userId, amount });
-      fetchWalletBalances();
-      setUserId('');
+      await restApiClient.put('/wallet/addFunds?walletId='+selectedWalletId+'&funds='+amount+'');
+      fetchWallets();
       setAmount('');
     } catch (error) {
-      console.error('Error depositing funds:', error);
+      toast('Error add funds:'+ error);
+      console.error('Error add funds:', error);
     }
   };
 
-  const fetchWalletBalances = async () => {
+  const handleCreate = async () => {
+    try {
+      await restApiClient.post('/wallet/create');
+      fetchWallets();
+      setAmount('');
+      toast("Wallet created!");
+    } catch (error) {
+      toast('Error create wallet:'+ error);
+      console.error('Error create wallet:', error);
+    }
+  };
+
+  const fetchWallets = async () => {
     try {
       const response = await restApiClient.get<WalletResponse[]>('/wallet/all');
       setWalletBalances(response.data);
+      setWalletIds(response.data.map(x=> x.id));
     } catch (error) {
+      toast('Error fetching wallet balances:'+ error);
       console.error('Error fetching wallet balances:', error);
     }
   };
 
   const handleWithdraw = async () => {
     try {
-      await restApiClient.post('/api/wallet/withdraw', { userId, amount });
-      fetchWalletBalances();
-      setUserId('');
+      await restApiClient.put('/wallet/removeFunds?walletId='+selectedWalletId+'&funds='+amount+'');
+      fetchWallets();
       setAmount('');
     } catch (error) {
-      console.error('Error withdrawing funds:', error);
+      toast('Error remove funds:'+ error);
+      console.error('Error remove funds:', error);
     }
   };
 
   return (
     <div>
-      <h1>Wallet Balances</h1>
-      <ul>
-        {walletBalances?.map((balance, index) => (
-          <li key={index}>Account {index + 1}: {balance.name}</li>
-        ))}
-      </ul>
       <div className="operation-section">
         <h2>Perform Operations</h2>
         <div className="select-container">
@@ -83,9 +81,17 @@ const WalletBalanceList = () => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <button className="deposit-btn" onClick={handleDeposit}>Deposit</button>
-        <button className="withdraw-btn" onClick={handleWithdraw}>Withdraw</button>
+        <button className="create-btn" onClick={handleCreate}>Create wallet</button>
+        <button className="deposit-btn" onClick={handleDeposit}>Add funds</button>
+        <button className="withdraw-btn" onClick={handleWithdraw}>Remove funds</button>
       </div>
+      <h1>Wallet Balances</h1>
+      <ul>
+        {wallets?.map((wallet, index) => (
+          <li key={index}>Account {index + 1}: {wallet.name}: Balance : {wallet.balance}</li>
+        ))}
+      </ul>
+      
     
     </div>
     

@@ -23,6 +23,12 @@ namespace WalletApp.Server.Domain
 
         public async Task AddFunds(long walletId, decimal funds)
         {
+            if (funds <= 0)
+            {
+                Console.WriteLine("Invalid funds. Please enter a positive value.");
+                return;
+            }
+
             var wallet = await repository.Get(walletId);
 
             if(wallet is null)
@@ -37,13 +43,13 @@ namespace WalletApp.Server.Domain
 
         public async Task RemoveFunds(long walletId, decimal funds)
         {
-            var wallet = await repository.Get(walletId);
-
             if (funds <= 0)
             {
                 Console.WriteLine("Invalid funds. Please enter a positive value.");
                 return;
             }
+
+            var wallet = await repository.Get(walletId);
 
             if (wallet is null)
             {
